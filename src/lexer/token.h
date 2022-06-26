@@ -1,8 +1,7 @@
 #pragma once
 
 enum Token {
-    NUM = 1,
-    ADD,
+    ADD = 1,
     SUB,
     MUL,
     DIV,
@@ -10,8 +9,9 @@ enum Token {
     MOD,
     LPAREN,
     RPAREN,
-    FUNC,
     COMMA,
+    NUM,
+    FUNC,
 };
 
 extern const char *TOKEN_NAMES[];
