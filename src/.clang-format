@@ -1,0 +1,13 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+IndentAccessModifiers: false
+AccessModifierOffset: -4
+IndentCaseBlocks: false
+ColumnLimit: 120
+PenaltyBreakComment: 99999999
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
