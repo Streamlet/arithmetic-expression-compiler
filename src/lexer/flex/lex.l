@@ -6,6 +6,7 @@
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
+#include <stdlib.h>
 
 union {
     double dval;
