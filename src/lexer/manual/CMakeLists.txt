@@ -4,6 +4,7 @@ project(lexer_manual C CXX)
 
 add_executable(lexer_manual
     "../token.h"
+    "../token_v.h"
     "../token.cpp"
     "lex.h"
     "lex.cpp"

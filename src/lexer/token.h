@@ -13,5 +13,3 @@ enum Token {
     NUM,
     FUNC,
 };
-
-extern const char *TOKEN_NAMES[];

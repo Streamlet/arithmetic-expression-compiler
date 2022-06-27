@@ -8,6 +8,7 @@ execute_process(
 
 add_executable(lexer_flex
     "../token.h"
+    "../token_v.h"
     "../token.cpp"
     "lex.l"
     "lex.yy.c"

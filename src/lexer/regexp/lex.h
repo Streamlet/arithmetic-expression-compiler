@@ -1,14 +1,6 @@
 #pragma once
 
-#include "../token.h"
-#include <string>
-#include <vector>
-
-struct TokenV {
-    Token token;
-    double dval;
-    std::string str;
-};
+#include "../token_v.h"
 
 class Lexer {
 public:
@@ -23,4 +15,3 @@ private:
 };
 
 std::vector<TokenV> lex(const char *s);
-void print(std::vector<TokenV> token_list);

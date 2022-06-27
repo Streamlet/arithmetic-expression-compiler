@@ -4,6 +4,7 @@ project(lexer_regexp C CXX)
 
 add_executable(lexer_regexp
     "../token.h"
+    "../token_v.h"
     "../token.cpp"
     "lex.h"
     "lex.cpp"
