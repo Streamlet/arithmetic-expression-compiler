@@ -2,6 +2,11 @@
 #include <memory>
 #include <unordered_map>
 
+#ifdef WIN32
+#define _USE_MATH_DEFINES
+#endif
+#include <math.h>
+
 std::unordered_map<char, Token> FIXED_TOKEN = {
     {'+', Token::ADD}, {'-', Token::SUB},    {'*', Token::MUL},    {'/', Token::DIV},   {'^', Token::EXP},
     {'%', Token::MOD}, {'(', Token::LPAREN}, {')', Token::RPAREN}, {',', Token::COMMA},
@@ -49,6 +54,19 @@ TokenV Lexer::next() {
         ctx->yytext_end = ctx->yytext[ctx->yyleng];
         ctx->yytext[ctx->yyleng] = '\0';
         return TokenV{it->second};
+    }
+
+    if (*ctx->yytext == 'e') {
+        ctx->yytext_end = ctx->yytext[ctx->yyleng];
+        ctx->yytext[ctx->yyleng] = '\0';
+        return TokenV{NUM, M_E};
+    }
+
+    if (*ctx->yytext == 'p' && *(ctx->yytext + 1) == 'i') {
+        ctx->yyleng = 2;
+        ctx->yytext_end = ctx->yytext[ctx->yyleng];
+        ctx->yytext[ctx->yyleng] = '\0';
+        return TokenV{NUM, M_PI};
     }
 
     if ((*ctx->yytext >= '0' && *ctx->yytext <= '9') || *ctx->yytext == '.') {

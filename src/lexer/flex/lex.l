@@ -2,6 +2,11 @@
 
 #include "../token.h"
 
+#ifdef WIN32
+#define _USE_MATH_DEFINES
+#endif
+#include <math.h>
+
 union {
     double dval;
     int strlen;
@@ -24,7 +29,9 @@ id          [A-Za-z_][A-Za-z_0-9]*
 "("         { return LPAREN; }
 ")"         { return RPAREN; }
 ","         { return COMMA; }
-{number}    { yylval.dval = atof(yytext); return NUM;}
+"e"         { yylval.dval = M_E; return NUM; }
+"pi"        { yylval.dval = M_PI; return NUM; }
+{number}    { yylval.dval = atof(yytext); return NUM; }
 {id}        { yylval.strlen = yyleng; yylval.str = yytext; return FUNC; }
 .           { return -1; }
 

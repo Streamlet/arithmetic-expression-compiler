@@ -3,9 +3,14 @@
 #include <unordered_map>
 #include <regex>
 
+#ifdef WIN32
+#define _USE_MATH_DEFINES
+#endif
+#include <math.h>
+
 std::unordered_map<char, Token> FIXED_TOKEN = {
-    {'+', Token::ADD}, {'-', Token::SUB},    {'*', Token::MUL},    {'/', Token::DIV},   {'^', Token::EXP},
-    {'%', Token::MOD}, {'(', Token::LPAREN}, {')', Token::RPAREN}, {',', Token::COMMA},
+    {'+', ADD}, {'-', SUB},    {'*', MUL},    {'/', DIV},   {'^', EXP},
+    {'%', MOD}, {'(', LPAREN}, {')', RPAREN}, {',', COMMA},
 };
 
 
@@ -18,10 +23,31 @@ const char *PATTERN = "(^\\+)"
                       "|(^\\()"
                       "|(^\\))"
                       "|(^,)"
+                      "|(^e)"
+                      "|(^pi)"
                       "|(^(?:[0-9]+|[0-9]*\\.[0-9]+)(?:[Ee][+-]?[0-9]+)?)"
                       "|(^[A-Za-z_][A-Za-z_0-9]*)";
 
 const std::regex REGEX(PATTERN);
+
+enum PatternGroup {
+    PG_ADD = 1,
+    PG_SUB,
+    PG_MUL,
+    PG_DIV,
+    PG_EXP,
+    PG_MOD,
+    PG_LPAREN,
+    PG_RPAREN,
+    PG_COMMA,
+    PG_E,
+    PG_PI,
+    PG_NUM,
+    PG_FUNC,
+};
+
+const Token PATTERN_GROUP_TOKEN_MAP[] = {(Token)0, ADD,    SUB,   MUL, DIV, EXP, MOD,
+                                         LPAREN,   RPAREN, COMMA, NUM, NUM, NUM, FUNC};
 
 struct Context
 {
@@ -65,17 +91,23 @@ TokenV Lexer::next() {
         return TokenV{(Token)-1};
     }
 
-    for (int t = ADD; t <= FUNC; ++t) {
+    for (int t = PG_ADD; t <= PG_FUNC; ++t) {
         if (m[t].matched) {
             ctx->yyleng = m[t].second - m[t].first;
             ctx->yytext_end = ctx->yytext[ctx->yyleng];
             ctx->yytext[ctx->yyleng] = '\0';
-            TokenV v{(Token)t};
+            TokenV v{PATTERN_GROUP_TOKEN_MAP[t]};
             switch (t) {
-            case NUM:
+            case PG_E:
+                v.dval = M_E;
+                break;
+            case PG_PI:
+                v.dval = M_PI;
+                break;
+            case PG_NUM:
                 v.dval = atof(ctx->yytext);
                 break;
-            case FUNC:
+            case PG_FUNC:
                 v.str.assign(ctx->yytext, (size_t)ctx->yyleng);
                 break;
             default:
