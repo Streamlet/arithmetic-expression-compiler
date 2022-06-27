@@ -52,26 +52,34 @@ TokenV Lexer::next() {
     }
 
     if ((*ctx->yytext >= '0' && *ctx->yytext <= '9') || *ctx->yytext == '.') {
-        while (ctx->yytext[ctx->yyleng] != '\0' && ctx->yytext[ctx->yyleng] >= '0' && ctx->yytext[ctx->yyleng] <= '9') {
-            ++ctx->yyleng;
-        }
-        if (ctx->yytext[ctx->yyleng] == '.') {
-            ++ctx->yyleng;
-            while (ctx->yytext[ctx->yyleng] != '\0' && ctx->yytext[ctx->yyleng] >= '0' &&
-                    ctx->yytext[ctx->yyleng] <= '9') {
-                ++ctx->yyleng;
+        const char *p = ctx->yytext;
+        bool has_dot = false, has_exp = false;
+        while (*p != '\0') {
+            if (*p == '.') {
+                if (has_dot || has_exp)
+                    break;
+                if (p[1] == '\0' || !(p[1] >= '0' && p[1] <= '9'))
+                    break;
+                has_dot = true;
+                p += 2;
+            } else if (*p == 'E' || *p == 'e') {
+                if (has_exp)
+                    break;
+                int digit_pos = p[1] == '+' || p[1] == '-' ? 2 : 1;
+                if (p[digit_pos] == '\0' || !(p[digit_pos] >= '0' && p[digit_pos] <= '9'))
+                    break;
+                has_exp = true;
+                p += digit_pos + 1;
+            } else if (*p >= '0' && *p <= '9') {
+                ++p;
+            } else {
+                break;
             }
         }
-        if (ctx->yytext[ctx->yyleng] == 'E' || ctx->yytext[ctx->yyleng] == 'e') {
-            ++ctx->yyleng;
-            if (ctx->yytext[ctx->yyleng] == '+' || ctx->yytext[ctx->yyleng] == '-') {
-                ++ctx->yyleng;
-            }
-            while (ctx->yytext[ctx->yyleng] != '\0' && ctx->yytext[ctx->yyleng] >= '0' &&
-                   ctx->yytext[ctx->yyleng] <= '9') {
-                ++ctx->yyleng;
-            }
-        }
+        if (p == ctx->yytext)
+            return TokenV{(Token)-1};
+
+        ctx->yyleng = p - ctx->yytext;
         ctx->yytext_end = ctx->yytext[ctx->yyleng];
         ctx->yytext[ctx->yyleng] = '\0';
         return TokenV{NUM, atof(ctx->yytext)};
@@ -85,7 +93,7 @@ TokenV Lexer::next() {
         }
         ctx->yytext_end = ctx->yytext[ctx->yyleng];
         ctx->yytext[ctx->yyleng] = '\0';
-        return TokenV{NUM, 0.0, ctx->yytext};
+        return TokenV{FUNC, 0.0, ctx->yytext};
     }
     return TokenV{(Token)-1};
 }
