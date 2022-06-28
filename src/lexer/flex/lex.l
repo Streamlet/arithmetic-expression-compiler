@@ -5,8 +5,10 @@
 #include "../token.h"
 union {
     double dval;
-    int strlen;
-    const char *str;
+    struct {
+        const char *str;
+        int len;
+    } str;
 } yylval;
 #endif
 
@@ -24,7 +26,7 @@ id          [A-Za-z_][A-Za-z_0-9]*
 
 %%
 
-"[ \\t\\n]" {}
+"[ \t]"     {}
 "+"         { return ADD; }
 "-"         { return SUB; }
 "*"         { return MUL; }
@@ -37,7 +39,8 @@ id          [A-Za-z_][A-Za-z_0-9]*
 "e"         { yylval.dval = M_E; return NUM; }
 "pi"        { yylval.dval = M_PI; return NUM; }
 {number}    { yylval.dval = atof(yytext); return NUM; }
-{id}        { yylval.strlen = yyleng; yylval.str = yytext; return FUNC; }
+{id}        { yylval.str.str = yytext; yylval.str.len = yyleng; return FUNC; }
+"\n"        { return 0; }
 .           { return -1; }
 
 %%
@@ -47,15 +50,15 @@ double yy_get_dval() {
 }
 
 int yy_get_strlen() {
-    return yylval.strlen;
+    return yylval.str.len;
 }
 
 const char *yy_get_str() {
-    return yylval.str;
+    return yylval.str.str;
 }
 
 const char *yy_get_current_text() {
-    return yylval.str;
+    return yytext;
 }
 
 struct LexContext {
