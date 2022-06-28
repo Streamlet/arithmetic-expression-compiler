@@ -1,18 +1,21 @@
 %{
-
+#ifdef USE_LEX_WITH_YACC
+#include "../../parser/bison/parser.tab.h"
+#else
 #include "../token.h"
-
-#ifdef WIN32
-#define _USE_MATH_DEFINES
-#endif
-#include <math.h>
-#include <stdlib.h>
-
 union {
     double dval;
     int strlen;
     const char *str;
 } yylval;
+#endif
+
+#ifdef _WIN32
+#define _USE_MATH_DEFINES
+#endif
+#include <math.h>
+#include <stdlib.h>
+
 
 %}
 
@@ -21,6 +24,7 @@ id          [A-Za-z_][A-Za-z_0-9]*
 
 %%
 
+"[ \\t\\n]" {}
 "+"         { return ADD; }
 "-"         { return SUB; }
 "*"         { return MUL; }
