@@ -60,6 +60,10 @@ struct ASTFunction : public ASTNode {
         LOG,
         LN,
         LG,
+        SIN,
+        COS,
+        TAN,
+        COT,
     };
 
     ASTFunction();

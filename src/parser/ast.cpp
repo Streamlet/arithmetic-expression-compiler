@@ -67,6 +67,12 @@ FuncDef FUNC_DEF[] = {
     {ASTFunction::LOG, "log", 2},
     {ASTFunction::LN, "ln", 1},
     {ASTFunction::LG, "lg", 1},
+    {ASTFunction::SIN, "sin", 1},
+    {ASTFunction::COS, "cos", 1},
+    {ASTFunction::TAN, "tan", 1},
+    {ASTFunction::TAN, "tg", 1},
+    {ASTFunction::COT, "cot", 1},
+    {ASTFunction::COT, "ctg", 1},
 };
 
 ASTFunction::ASTFunction() : ASTNode(FUNCTION) {
@@ -82,6 +88,14 @@ double ASTFunction::value() {
         return log(children[0]->value());
     case LG:
         return log10(children[0]->value());
+    case SIN:
+        return sin(children[0]->value());
+    case COS:
+        return cos(children[0]->value());
+    case TAN:
+        return tan(children[0]->value());
+    case COT:
+        return 1 / tan(children[0]->value());
     }
     assert(false);
     return 0.0;
@@ -117,7 +131,7 @@ void print_result(ASTNode *node) {
 
 const char *UNARY_OPERATOR_NAMES[] = {"POS", "NEG"};
 const char *BINARY_OPERATOR_NAMES[] = {"ADD", "SUB", "MUL", "DIV", "EXP", "MOD"};
-const char *FUNC_NAMES[] = {"sqrt", "log", "ln", "lg"};
+const char *FUNC_NAMES[] = {"sqrt", "log", "ln", "lg", "sin", "cos", "tan", "cot"};
 
 void print_struct_internal(std::string indent, ASTNode *node) {
     switch (node->type) {
