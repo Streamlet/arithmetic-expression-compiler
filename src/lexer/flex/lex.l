@@ -26,7 +26,10 @@ id          [A-Za-z_][A-Za-z_0-9]*
 
 %%
 
-"[ \t]"     {}
+" "         ;
+\t          ;
+\n          { return YYEOF; }
+
 "+"         { return ADD; }
 "-"         { return SUB; }
 "*"         { return MUL; }
@@ -40,7 +43,7 @@ id          [A-Za-z_][A-Za-z_0-9]*
 "pi"        { yylval.dval = M_PI; return NUM; }
 {number}    { yylval.dval = atof(yytext); return NUM; }
 {id}        { yylval.str.str = yytext; yylval.str.len = yyleng; return FUNC; }
-"\n"        { return YYEOF; }
+
 .           { return YYUNDEF; }
 
 %%
