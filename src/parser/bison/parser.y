@@ -38,28 +38,31 @@ const char *yy_error_text = NULL;
         int len;
     } sval;
 }
-%type <dval> line expr terms term factors factor expees expee NUM
+%type <dval> line expr term sterm factor expee NUM
 %type <sval> FUNC
 
 %%
 line: expr { $$ = $1; yy_result = $$; }
-expr: terms { $$ = $1; }
-terms: term { $$ = $1; }
-     | ADD term { $$ = $2; }
-     | SUB term { $$ = -$2; }
-     | terms ADD term { $$ = $1 + $3; }
-     | terms SUB term { $$ = $1 - $3; }
-     ;
-term: factors { $$ = $1; }
-factors: factor { $$ = $1; }
-       | factors MUL factor { $$ = $1 * $3; }
-       | factors DIV factor { $$ = $1 / $3; }
-       | factors MOD factor { $$ = fmod($1, $3); }
+
+expr: term { $$ = $1; }
+    | sterm { $$ = $1; }
+    | expr sterm { $$ = $1 + $2; }
     ;
-factor: expees { $$ = $1; }
-expees: expee { $$ = $1; }
-      | expee EXP expees  { $$ = pow($1, $3); }
+
+sterm: ADD term { $$ = $2; }
+     | SUB term { $$ = -$2; }
+     ;
+
+term: factor { $$ = $1; }
+    | term MUL factor { $$ = $1 * $3; }
+    | term DIV factor { $$ = $1 / $3; }
+    | term MOD factor { $$ = fmod($1, $3); }
+    ;
+
+factor: expee { $$ = $1; }
+      | expee EXP factor  { $$ = pow($1, $3); }
       ;
+
 expee: NUM  { $$ = $1; }
      | LPAREN expr RPAREN  { $$ = $2; }
      | FUNC LPAREN expr RPAREN {
