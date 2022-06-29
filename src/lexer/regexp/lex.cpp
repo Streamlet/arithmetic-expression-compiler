@@ -106,7 +106,7 @@ Token Lexer::next() {
                 v.dval = atof(ctx->yytext);
                 break;
             case PG_FUNC:
-                v.str.assign(ctx->yytext, (size_t)ctx->yyleng);
+                v.sval.assign(ctx->yytext, (size_t)ctx->yyleng);
                 break;
             default:
                 break;

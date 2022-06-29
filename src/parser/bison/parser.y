@@ -36,10 +36,10 @@ const char *yy_error_text = NULL;
     struct {
         const char *str;
         int len;
-    } str;
+    } sval;
 }
 %type <dval> line expr terms term factors factor expees expee NUM
-%type <str> FUNC
+%type <sval> FUNC
 
 %%
 line: expr { $$ = $1; yy_result = $$; }

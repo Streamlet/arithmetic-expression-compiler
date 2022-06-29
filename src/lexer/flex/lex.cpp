@@ -25,7 +25,7 @@ Token Lexer::next() {
         t.dval = yy_get_dval();
         break;
     case FUNC:
-        t.str.assign(yy_get_str(), (size_t)yy_get_strlen());
+        t.sval.assign(yy_get_str(), (size_t)yy_get_strlen());
         break;
     default:
         break;

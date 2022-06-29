@@ -7,7 +7,7 @@
 struct Token {
     yytoken_kind_t kind;
     double dval;
-    std::string str;
+    std::string sval;
 };
 
 void print(std::vector<Token> token_list);

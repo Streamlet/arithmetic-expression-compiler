@@ -11,7 +11,7 @@ void print(std::vector<Token> token_list) {
             printf("%s %lf\n", TOKEN_NAMES[t.kind - YYUNDEF], t.dval);
             break;
         case FUNC:
-            printf("%s %s\n", TOKEN_NAMES[t.kind - YYUNDEF], t.str.c_str());
+            printf("%s %s\n", TOKEN_NAMES[t.kind - YYUNDEF], t.sval.c_str());
             break;
         default:
             printf("%s\n", TOKEN_NAMES[t.kind - YYUNDEF]);

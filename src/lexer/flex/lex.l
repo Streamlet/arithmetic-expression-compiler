@@ -8,7 +8,7 @@ union {
     struct {
         const char *str;
         int len;
-    } str;
+    } sval;
 } yylval;
 #endif
 
@@ -42,7 +42,7 @@ id          [A-Za-z_][A-Za-z_0-9]*
 "e"         { yylval.dval = M_E; return NUM; }
 "pi"        { yylval.dval = M_PI; return NUM; }
 {number}    { yylval.dval = atof(yytext); return NUM; }
-{id}        { yylval.str.str = yytext; yylval.str.len = yyleng; return FUNC; }
+{id}        { yylval.sval.str = yytext; yylval.sval.len = yyleng; return FUNC; }
 
 .           { return YYUNDEF; }
 
@@ -53,11 +53,11 @@ double yy_get_dval() {
 }
 
 int yy_get_strlen() {
-    return yylval.str.len;
+    return yylval.sval.len;
 }
 
 const char *yy_get_str() {
-    return yylval.str.str;
+    return yylval.sval.str;
 }
 
 const char *yy_get_current_text() {

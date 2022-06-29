@@ -110,7 +110,7 @@ Token Lexer::next() {
         }
         ctx->yytext_end = ctx->yytext[ctx->yyleng];
         ctx->yytext[ctx->yyleng] = '\0';
-        return Token{FUNC, 0.0, ctx->yytext};
+        return Token{FUNC, 0.0, std::string(ctx->yytext, (size_t)ctx->yyleng)};
     }
     return Token{YYUNDEF};
 }
