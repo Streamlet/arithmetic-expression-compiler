@@ -8,8 +8,8 @@
 #include <math.h>
 
 std::unordered_map<char, Token> FIXED_TOKEN = {
-    {'+', Token::ADD}, {'-', Token::SUB},    {'*', Token::MUL},    {'/', Token::DIV},   {'^', Token::EXP},
-    {'%', Token::MOD}, {'(', Token::LPAREN}, {')', Token::RPAREN}, {',', Token::COMMA},
+    {'+', ADD}, {'-', SUB},    {'*', MUL},    {'/', DIV},   {'^', EXP},
+    {'%', MOD}, {'(', LPAREN}, {')', RPAREN}, {',', COMMA},
 };
 
 struct Context
