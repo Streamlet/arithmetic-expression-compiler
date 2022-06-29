@@ -11,5 +11,9 @@ add_definitions(-DUSE_LEX_WITH_YACC)
 add_executable(parser_bison
     "../../lexer/flex/lex.yy.c"
     "parser.y"
+    "parser.tab.h"
     "parser.tab.c"
+    "parser.h"
+    "parser.cpp"
+    "main.cpp"
 )

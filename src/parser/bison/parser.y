@@ -9,6 +9,10 @@
 
 extern int yylex();
 int yyerror(char* s);
+
+double yy_result = 0.0f;
+const char *yy_error_type = NULL;
+const char *yy_error_text = NULL;
 %}
  
 %token ADD
@@ -38,7 +42,7 @@ int yyerror(char* s);
 %type <str> FUNC
 
 %%
-line: expr { $$ = $1; printf("%lf\n", $$); }
+line: expr { $$ = $1; yy_result = $$; }
 expr: terms { $$ = $1; }
 terms: term { $$ = $1; }
      | ADD term { $$ = $2; }
@@ -74,15 +78,25 @@ expee: NUM  { $$ = $1; }
       }
      ;
 %%
- 
-int main() {
-    while (1) {
-        yyparse();
-    }
+
+extern void *yy_init_ctx(const char *yy_str);
+extern void yy_free_ctx(void *yy_ctx);
+extern char *yy_get_current_text();
+
+int yyerror(char* s) {
+    yy_error_type = s;
+    yy_error_text = yy_get_current_text();
     return 0;
 }
- 
-int yyerror(char* s) {
-    printf("Error: %s\n", s);
-    return 0;
+
+double yy_get_result() {
+    return yy_result;
+}
+
+const char *yy_get_error_type() {
+    return yy_error_type;
+}
+
+const char *yy_get_error_text() {
+    return yy_error_text;
 }
