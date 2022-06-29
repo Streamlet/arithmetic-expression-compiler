@@ -12,6 +12,8 @@ add_definitions(-Wno-writable-strings)
 
 add_executable(parser_bison
     "../../lexer/flex/lex.yy.cc"
+    "../ast.h"
+    "../ast.cpp"
     "parser.y"
     "parser.tab.h"
     "parser.tab.cc"

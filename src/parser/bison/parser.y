@@ -1,20 +1,31 @@
 %{
+#include "../ast.h"
 #include <stdio.h>
-
-#ifdef _WIN32
-#define _USE_MATH_DEFINES
-#endif
-#include <math.h>
-#include <string.h>
+#include <string>
+#include <memory>
 
 extern int yylex();
-int yyerror(char* s);
+int yyerror(const char* s);
 
-double yy_result = 0.0f;
-const char *yy_error_type = NULL;
-const char *yy_error_text = NULL;
+std::unique_ptr<ASTNode> yy_result;
+std::string yy_error;
 %}
- 
+
+%code requires
+{
+struct ASTNode;
+}
+
+%union {
+    double dval;
+    struct {
+        const char *str;
+        int len;
+    } sval;
+
+    ASTNode *node;
+}
+
 %token ADD
 %token SUB
 %token MUL
@@ -24,82 +35,63 @@ const char *yy_error_text = NULL;
 %token LPAREN
 %token RPAREN
 %token COMMA
-%token NUM
-%token FUNC
+%token <dval> NUM
+%token <sval> FUNC
 
 %left ADD SUB
 %left MUL DIV MOD
 %right EXP
 
-%union {
-    double dval;
-    struct {
-        const char *str;
-        int len;
-    } sval;
-}
-%type <dval> line expr term sterm factor expee NUM
-%type <sval> FUNC
+%type <node> expr term factor expee params num
 
 %%
-line: expr { $$ = $1; yy_result = $$; }
+line: expr { yy_result = std::unique_ptr<ASTNode>($1); }
 
 expr: term { $$ = $1; }
-    | sterm { $$ = $1; }
-    | expr sterm { $$ = $1 + $2; }
+    | ADD term { $$ = new ASTUnaryOperator(ASTUnaryOperator::POS, $2); }
+    | SUB term { $$ = new ASTUnaryOperator(ASTUnaryOperator::NEG, $2); }
+    | expr ADD term { $$ = new ASTBinaryOperator(ASTBinaryOperator::ADD, $1, $3); }
+    | expr SUB term { $$ = new ASTBinaryOperator(ASTBinaryOperator::SUB, $1, $3); }
     ;
 
-sterm: ADD term { $$ = $2; }
-     | SUB term { $$ = -$2; }
-     ;
-
 term: factor { $$ = $1; }
-    | term MUL factor { $$ = $1 * $3; }
-    | term DIV factor { $$ = $1 / $3; }
-    | term MOD factor { $$ = fmod($1, $3); }
+    | term MUL factor { $$ = new ASTBinaryOperator(ASTBinaryOperator::MUL, $1, $3); }
+    | term DIV factor { $$ = new ASTBinaryOperator(ASTBinaryOperator::DIV, $1, $3); }
+    | term MOD factor { $$ = new ASTBinaryOperator(ASTBinaryOperator::MOD, $1, $3); }
     ;
 
 factor: expee { $$ = $1; }
-      | expee EXP factor  { $$ = pow($1, $3); }
+      | expee EXP factor { $$ = new ASTBinaryOperator(ASTBinaryOperator::EXP, $1, $3); }
       ;
 
-expee: NUM  { $$ = $1; }
+expee: num { $$ = $1; }
      | LPAREN expr RPAREN  { $$ = $2; }
-     | FUNC LPAREN expr RPAREN {
-        if (strncmp("ln", $1.str, $1.len) == 0) {
-            $$ = log($3);
-        } else if (strncmp("lg", $1.str, $1.len) == 0) {
-            $$ = log10($3);
-        } else if (strncmp("sqrt", $1.str, $1.len) == 0) {
-            $$ = sqrt($3);
-        }
-      }
-     | FUNC LPAREN expr COMMA expr RPAREN { 
-        if (strncmp("log", $1.str, $1.len) == 0) {
-            $$ = log($5)/log($3);
-        }
-      }
+     | FUNC LPAREN params RPAREN { $$ = $3; if (!((ASTFunction *)$$)->assign_name($1.str, $1.len, yyerror)) YYERROR; }
      ;
+
+params: expr { $$ = new ASTFunction; ((ASTFunction *)$$)->add_child($1); }
+      | params COMMA expr { $$ = $1; ((ASTFunction *)$$)->add_child($3); }
+
+num: NUM { $$ = new ASTNumber($1); }
+   ;
+
 %%
 
 extern void *yy_init_ctx(const char *yy_str);
 extern void yy_free_ctx(void *yy_ctx);
 extern char *yy_get_current_text();
 
-int yyerror(char* s) {
-    yy_error_type = s;
-    yy_error_text = yy_get_current_text();
+int yyerror(const char* s) {
+    yy_error = s;
+    yy_error += " current code: ";
+    yy_error += yy_get_current_text();
     return 0;
 }
 
-double yy_get_result() {
-    return yy_result;
+std::unique_ptr<ASTNode> yy_get_result() {
+    return std::move(yy_result);
 }
 
-const char *yy_get_error_type() {
-    return yy_error_type;
-}
-
-const char *yy_get_error_text() {
-    return yy_error_text;
+const std::string &yy_get_error() {
+    return yy_error;
 }

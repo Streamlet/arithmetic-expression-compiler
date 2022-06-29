@@ -1,14 +1,16 @@
 #pragma once
 
+#include "../ast.h"
+#include <memory>
+
 class Parser {
 public:
     Parser(const char *yy_str);
     ~Parser();
 
     bool parse();
-    double result();
-    const char *error_type();
-    const char *error_text();
+    std::unique_ptr<ASTNode> result();
+    const std::string &error();
 
 private:
     void *yy_ctx;

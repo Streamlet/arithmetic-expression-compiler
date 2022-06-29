@@ -3,9 +3,8 @@
 void *yy_init_ctx(const char *yy_str);
 void yy_free_ctx(void *yy_ctx);
 int yyparse();
-double yy_get_result();
-const char *yy_get_error_type();
-const char *yy_get_error_text();
+std::unique_ptr<ASTNode> yy_get_result();
+const std::string &yy_get_error();
 
 Parser::Parser(const char *yy_str) {
     yy_ctx = yy_init_ctx(yy_str);
@@ -19,14 +18,10 @@ bool Parser::parse() {
     return yyparse() == 0;
 }
 
-double Parser::result() {
-    return yy_get_result();
+std::unique_ptr<ASTNode> Parser::result() {
+    return std::move(yy_get_result());
 }
 
-const char *Parser::error_type() {
-    return yy_get_error_type();
-}
-
-const char *Parser::error_text() {
-    return yy_get_error_text();
+const std::string &Parser::error() {
+    return yy_get_error();
 }
