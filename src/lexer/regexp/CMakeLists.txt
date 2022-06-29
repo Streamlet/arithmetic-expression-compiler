@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.5.1)
 project(lexer_regexp C CXX)
 
 add_executable(lexer_regexp
+    "../token_type.h"
     "../token.h"
-    "../token_v.h"
     "../token.cpp"
     "lex.h"
     "lex.cpp"

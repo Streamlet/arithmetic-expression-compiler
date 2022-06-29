@@ -2,7 +2,7 @@
 #ifdef USE_LEX_WITH_YACC
 #include "../../parser/bison/parser.tab.h"
 #else
-#include "../token.h"
+#include "../token_type.h"
 union {
     double dval;
     struct {
@@ -40,8 +40,8 @@ id          [A-Za-z_][A-Za-z_0-9]*
 "pi"        { yylval.dval = M_PI; return NUM; }
 {number}    { yylval.dval = atof(yytext); return NUM; }
 {id}        { yylval.str.str = yytext; yylval.str.len = yyleng; return FUNC; }
-"\n"        { return 0; }
-.           { return -1; }
+"\n"        { return YYEOF; }
+.           { return YYUNDEF; }
 
 %%
 

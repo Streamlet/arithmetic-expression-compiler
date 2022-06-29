@@ -1,17 +1,17 @@
 #pragma once
 
-#include "../token_v.h"
+#include "../token.h"
 
 class Lexer {
 public:
     Lexer(const char *yy_str);
     ~Lexer();
 
-    TokenV next();
+    Token next();
     const char *text();
 
 private:
     void *yy_ctx;
 };
 
-std::vector<TokenV> lex(const char *s);
+std::vector<Token> lex(const char *s);

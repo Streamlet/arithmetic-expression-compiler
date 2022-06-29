@@ -8,11 +8,9 @@
 #endif
 #include <math.h>
 
-std::unordered_map<char, Token> FIXED_TOKEN = {
-    {'+', ADD}, {'-', SUB},    {'*', MUL},    {'/', DIV},   {'^', EXP},
-    {'%', MOD}, {'(', LPAREN}, {')', RPAREN}, {',', COMMA},
+std::unordered_map<char, yytoken_kind_t> FIXED_TOKEN = {
+    {'+', ADD}, {'-', SUB}, {'*', MUL}, {'/', DIV}, {'^', EXP}, {'%', MOD}, {'(', LPAREN}, {')', RPAREN}, {',', COMMA},
 };
-
 
 const char *PATTERN = "(^\\+)"
                       "|(^\\-)"
@@ -46,8 +44,8 @@ enum PatternGroup {
     PG_FUNC,
 };
 
-const Token PATTERN_GROUP_TOKEN_MAP[] = {(Token)0, ADD,    SUB,   MUL, DIV, EXP, MOD,
-                                         LPAREN,   RPAREN, COMMA, NUM, NUM, NUM, FUNC};
+const yytoken_kind_t PATTERN_GROUP_TOKEN_MAP[] = {YYUNDEF, ADD,    SUB,   MUL, DIV, EXP, MOD,
+                                                  LPAREN,  RPAREN, COMMA, NUM, NUM, NUM, FUNC};
 
 struct Context
 {
@@ -71,7 +69,7 @@ Lexer::~Lexer() {
     delete (Context *)yy_ctx;
 }
 
-TokenV Lexer::next() {
+Token Lexer::next() {
     Context *ctx = (Context *)yy_ctx;
     if (!(ctx->yytext == ctx->yy_str && ctx->yyleng == 0)) {
         ctx->yytext[ctx->yyleng] = ctx->yytext_end;
@@ -83,12 +81,12 @@ TokenV Lexer::next() {
         ++ctx->yytext;
 
     if (*ctx->yytext == '\0') {
-        return TokenV{(Token)0};
+        return Token{YYEOF};
     }
 
     std::cmatch m;
     if (!std::regex_search(ctx->yytext, m, REGEX)) {
-        return TokenV{(Token)-1};
+        return Token{YYUNDEF};
     }
 
     for (int t = PG_ADD; t <= PG_FUNC; ++t) {
@@ -96,7 +94,7 @@ TokenV Lexer::next() {
             ctx->yyleng = m[t].second - m[t].first;
             ctx->yytext_end = ctx->yytext[ctx->yyleng];
             ctx->yytext[ctx->yyleng] = '\0';
-            TokenV v{PATTERN_GROUP_TOKEN_MAP[t]};
+            Token v{PATTERN_GROUP_TOKEN_MAP[t]};
             switch (t) {
             case PG_E:
                 v.dval = M_E;
@@ -117,7 +115,7 @@ TokenV Lexer::next() {
         }
     }
 
-    return TokenV{(Token)-1};
+    return Token{YYUNDEF};
 }
 
 const char *Lexer::text() {
@@ -125,18 +123,18 @@ const char *Lexer::text() {
     return ctx->yytext;
 }
 
-std::vector<TokenV> lex(const char *s) {
-    std::vector<TokenV> r;
+std::vector<Token> lex(const char *s) {
+    std::vector<Token> r;
     Lexer l(s);
     while (true) {
-        TokenV t = l.next();
-        if (t.token > 0) {
-            r.push_back(std::move(t));
-        } else {
-            if (t.token < 0) {
-                printf("unrecognized charactor: %s\n", l.text());
-            }
+        Token t = l.next();
+        if (t.kind == YYEOF) {
             break;
+        } else if (t.kind == YYUNDEF) {
+            printf("unrecognized charactor: %s\n", l.text());
+            break;
+        } else {
+            r.push_back(std::move(t));
         }
     }
     return r;

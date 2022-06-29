@@ -1,15 +1,13 @@
 #pragma once
 
-enum Token {
-    ADD = 1,
-    SUB,
-    MUL,
-    DIV,
-    EXP,
-    MOD,
-    LPAREN,
-    RPAREN,
-    COMMA,
-    NUM,
-    FUNC,
+#include "token_type.h"
+#include <string>
+#include <vector>
+
+struct Token {
+    yytoken_kind_t kind;
+    double dval;
+    std::string str;
 };
+
+void print(std::vector<Token> token_list);

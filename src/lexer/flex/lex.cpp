@@ -17,38 +17,38 @@ Lexer::~Lexer() {
     yy_free_ctx(yy_ctx);
 }
 
-TokenV Lexer::next() {
-    Token t = (Token)yylex();
-    TokenV v{t};
-    switch (t) {
+Token Lexer::next() {
+    yytoken_kind_t k = (yytoken_kind_t)yylex();
+    Token t{k};
+    switch (k) {
     case NUM:
-        v.dval = yy_get_dval();
+        t.dval = yy_get_dval();
         break;
     case FUNC:
-        v.str.assign(yy_get_str(), (size_t)yy_get_strlen());
+        t.str.assign(yy_get_str(), (size_t)yy_get_strlen());
         break;
     default:
         break;
     }
-    return std::move(v);
+    return std::move(t);
 }
 
 const char * Lexer::text() {
     return yy_get_current_text();
 }
 
-std::vector<TokenV> lex(const char *s) {
-    std::vector<TokenV> r;
+std::vector<Token> lex(const char *s) {
+    std::vector<Token> r;
     Lexer l(s);
     while (true) {
-        TokenV t = l.next();
-        if (t.token > 0) {
-            r.push_back(std::move(t));
-        } else {
-            if (t.token < 0) {
-                printf("unrecognized charactor: %s\n", l.text());
-            }
+        Token t = l.next();
+        if (t.kind == YYEOF) {
             break;
+        } else if (t.kind == YYUNDEF) {
+            printf("unrecognized charactor: %s\n", l.text());
+            break;
+        } else {
+            r.push_back(std::move(t));
         }
     }
     return r;

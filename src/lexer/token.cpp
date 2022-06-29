@@ -1,20 +1,20 @@
-#include "token_v.h"
+#include "token.h"
 
 const char *TOKEN_NAMES[] = {
-    "EOF", "ADD", "SUB", "MUL", "DIV", "EXP", "MOD", "LPAREN", "RPAREN", "COMMA", "NUM", "FUNC",
+    "UNDEF", "ADD", "SUB", "MUL", "DIV", "EXP", "MOD", "LPAREN", "RPAREN", "COMMA", "NUM", "FUNC",
 };
 
-void print(std::vector<TokenV> token_list) {
+void print(std::vector<Token> token_list) {
     for (const auto &t : token_list) {
-        switch (t.token) {
+        switch (t.kind) {
         case NUM:
-            printf("%s %lf\n", TOKEN_NAMES[t.token], t.dval);
+            printf("%s %lf\n", TOKEN_NAMES[t.kind - YYUNDEF], t.dval);
             break;
         case FUNC:
-            printf("%s %s\n", TOKEN_NAMES[t.token], t.str.c_str());
+            printf("%s %s\n", TOKEN_NAMES[t.kind - YYUNDEF], t.str.c_str());
             break;
         default:
-            printf("%s\n", TOKEN_NAMES[t.token]);
+            printf("%s\n", TOKEN_NAMES[t.kind - YYUNDEF]);
             break;
         }
     }

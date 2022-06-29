@@ -7,8 +7,8 @@ execute_process(
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
 add_executable(lexer_flex
+    "../token_type.h"
     "../token.h"
-    "../token_v.h"
     "../token.cpp"
     "lex.l"
     "lex.yy.c"
