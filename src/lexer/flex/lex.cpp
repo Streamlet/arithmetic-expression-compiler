@@ -5,7 +5,7 @@
 void *yy_init_ctx(const char *yy_str);
 void yy_free_ctx(void *yy_ctx);
 int yylex();
-char *yy_get_current_text();
+const char *yy_get_current_text();
 double yy_get_dval();
 int yy_get_strlen();
 const char *yy_get_str();

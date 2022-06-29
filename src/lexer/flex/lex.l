@@ -1,6 +1,6 @@
 %{
 #ifdef USE_LEX_WITH_YACC
-#include "../../parser/bison/parser.tab.h"
+#include "../../parser/bison/parser.tab.hh"
 #else
 #include "../token_type.h"
 union {
@@ -13,6 +13,8 @@ union {
 #endif
 
 #ifdef _WIN32
+#define YYEOF   0
+#define YYUNDEF 257
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>

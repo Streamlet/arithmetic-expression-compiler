@@ -7,6 +7,7 @@ int main() {
         Parser p(buffer);
         if (p.parse()) {
             auto ast = p.result();
+            print_result(ast.get());
             print_struct(ast.get());
             print_graphviz(ast.get());
         } else {

@@ -4,6 +4,7 @@
 #endif
 #include <math.h>
 #include <sstream>
+#include <assert.h>
 
 ASTNode::ASTNode(ASTNodeType type) : type(type) {
 }
@@ -29,6 +30,7 @@ double ASTUnaryOperator::value() {
         return -operand->value();
     }
     assert(false);
+    return 0.0;
 }
 
 ASTBinaryOperator::ASTBinaryOperator(Operator op, ASTNode *left, ASTNode *right)
@@ -51,6 +53,7 @@ double ASTBinaryOperator::value() {
         return fmod(left->value(), right->value());
     }
     assert(false);
+    return 0.0;
 }
 
 struct FuncDef {
@@ -81,6 +84,7 @@ double ASTFunction::value() {
         return log10(children[0]->value());
     }
     assert(false);
+    return 0.0;
 }
 
 void ASTFunction::add_child(ASTNode *child) {

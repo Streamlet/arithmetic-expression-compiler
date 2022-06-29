@@ -79,7 +79,7 @@ num: NUM { $$ = new ASTNumber($1); }
 
 extern void *yy_init_ctx(const char *yy_str);
 extern void yy_free_ctx(void *yy_ctx);
-extern char *yy_get_current_text();
+extern const char *yy_get_current_text();
 
 int yyerror(const char* s) {
     yy_error = s;
