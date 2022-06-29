@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 
-extern "C" void *yy_init_ctx(const char *yy_str);
-extern "C" void yy_free_ctx(void *yy_ctx);
-extern "C" int yylex();
-extern "C" char *yy_get_current_text();
-extern "C" double yy_get_dval();
-extern "C" int yy_get_strlen();
-extern "C" const char *yy_get_str();
+void *yy_init_ctx(const char *yy_str);
+void yy_free_ctx(void *yy_ctx);
+int yylex();
+char *yy_get_current_text();
+double yy_get_dval();
+int yy_get_strlen();
+const char *yy_get_str();
 
 Lexer::Lexer(const char *yy_str) {
     yy_ctx = yy_init_ctx(yy_str);

@@ -1,6 +1,6 @@
 .*
-*.yy.c
-*.tab.c
+*.yy.cc
+*.tab.cc
 *.tab.h
 /build
 /bin
