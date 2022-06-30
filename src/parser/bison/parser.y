@@ -70,8 +70,8 @@ expee: num { $$ = $1; }
      | FUNC LPAREN params RPAREN { $$ = $3; if (!((ASTFunction *)$$)->assign_name($1.str, $1.len, yyerror)) YYERROR; }
      ;
 
-params: expr { $$ = new ASTFunction; ((ASTFunction *)$$)->add_child($1); }
-      | params COMMA expr { $$ = $1; ((ASTFunction *)$$)->add_child($3); }
+params: expr { $$ = new ASTFunction; ((ASTFunction *)$$)->add_argument($1); }
+      | params COMMA expr { $$ = $1; ((ASTFunction *)$$)->add_argument($3); }
       ;
 
 num: NUM { $$ = new ASTNumber($1); }

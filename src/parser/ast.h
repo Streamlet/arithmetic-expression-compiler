@@ -68,11 +68,11 @@ struct ASTFunction : public ASTNode {
 
     ASTFunction();
     double value() override;
-    void add_child(ASTNode *child);
+    void add_argument(ASTNode *argumemt);
     bool assign_name(const char *name, int len, int(yyerror)(const char *s));
 
     Function func;
-    std::vector<std::unique_ptr<ASTNode>> children;
+    std::vector<std::unique_ptr<ASTNode>> arguments;
 };
 
 void print_result(ASTNode *node);

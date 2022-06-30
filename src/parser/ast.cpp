@@ -81,38 +81,38 @@ ASTFunction::ASTFunction() : ASTNode(FUNCTION) {
 double ASTFunction::value() {
     switch (func) {
     case SQRT:
-        return sqrt(children[0]->value());
+        return sqrt(arguments[0]->value());
     case LOG:
-        return log(children[1]->value()) / log(children[0]->value());
+        return log(arguments[1]->value()) / log(arguments[0]->value());
     case LN:
-        return log(children[0]->value());
+        return log(arguments[0]->value());
     case LG:
-        return log10(children[0]->value());
+        return log10(arguments[0]->value());
     case SIN:
-        return sin(children[0]->value());
+        return sin(arguments[0]->value());
     case COS:
-        return cos(children[0]->value());
+        return cos(arguments[0]->value());
     case TAN:
-        return tan(children[0]->value());
+        return tan(arguments[0]->value());
     case COT:
-        return 1 / tan(children[0]->value());
+        return 1 / tan(arguments[0]->value());
     }
     assert(false);
     return 0.0;
 }
 
-void ASTFunction::add_child(ASTNode *child) {
-    children.push_back(std::unique_ptr<ASTNode>(child));
+void ASTFunction::add_argument(ASTNode *argument) {
+    arguments.push_back(std::unique_ptr<ASTNode>(argument));
 }
 
 bool ASTFunction::assign_name(const char *name, int len, int(yyerror)(const char *s)) {
     for (int i = 0; i < sizeof(FUNC_DEF) / sizeof(FuncDef); ++i) {
         if (strncmp(FUNC_DEF[i].name, name, len) == 0) {
             func = FUNC_DEF[i].func;
-            if (children.size() != FUNC_DEF[i].args) {
+            if (arguments.size() != FUNC_DEF[i].args) {
                 std::stringstream ss;
                 ss << "function '" << FUNC_DEF[i].name << "' needs " << FUNC_DEF[i].args << " argument(s), "
-                   << children.size() << " provided.";
+                   << arguments.size() << " provided.";
                 yyerror(ss.str().c_str());
                 return false;
             }
@@ -149,8 +149,8 @@ void print_struct_internal(std::string indent, ASTNode *node) {
         break;
     case ASTNode::FUNCTION:
         printf("%s%s = %lg\n", indent.c_str(), FUNC_NAMES[((ASTFunction *)node)->func], node->value());
-        for (const auto &child : ((ASTFunction *)node)->children) {
-            print_struct_internal(indent + "  ", child.get());
+        for (const auto &arg : ((ASTFunction *)node)->arguments) {
+            print_struct_internal(indent + "  ", arg.get());
         }
         break;
     default:
@@ -184,9 +184,9 @@ int print_graphviz_internal(int count, ASTNode *node) {
     case ASTNode::FUNCTION:
         printf("  n%d [label=\"%s\\n(=%lg)\" shape=rect ];\n", count, FUNC_NAMES[((ASTFunction *)node)->func],
                node->value());
-        for (const auto &child : ((ASTFunction *)node)->children) {
+        for (const auto &arg : ((ASTFunction *)node)->arguments) {
             printf("  n%d->n%d;\n", count, next);
-            next = print_graphviz_internal(next, child.get());
+            next = print_graphviz_internal(next, arg.get());
         }
         break;
     default:
