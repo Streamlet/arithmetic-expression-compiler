@@ -72,6 +72,7 @@ expee: num { $$ = $1; }
 
 params: expr { $$ = new ASTFunction; ((ASTFunction *)$$)->add_child($1); }
       | params COMMA expr { $$ = $1; ((ASTFunction *)$$)->add_child($3); }
+      ;
 
 num: NUM { $$ = new ASTNumber($1); }
    ;
