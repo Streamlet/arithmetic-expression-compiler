@@ -20,3 +20,10 @@ add_executable(lexer_flex
     "lex.cpp"
     "main.cpp"
 )
+
+if (MSVC)
+    target_compile_definitions(lexer_flex
+        PRIVATE -D_CRT_NONSTDC_NO_DEPRECATE )
+    target_compile_options(lexer_flex
+        PRIVATE /wd5033 /wd4267 /wd4244 /wd4065)
+endif()

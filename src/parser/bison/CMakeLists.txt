@@ -11,8 +11,6 @@ add_definitions(-DUSE_LEX_WITH_YACC)
 
 if (MSVC)
     include_directories(${CMAKE_CURRENT_LIST_DIR}/../../lexer/flex/include)
-else()
-    add_definitions(-Wno-writable-strings)
 endif()
 
 add_executable(parser_bison
@@ -26,3 +24,13 @@ add_executable(parser_bison
     "parser.cpp"
     "main.cpp"
 )
+
+if (MSVC)
+    target_compile_definitions(parser_bison
+        PRIVATE -D_CRT_NONSTDC_NO_DEPRECATE )
+    target_compile_options(parser_bison
+        PRIVATE /wd5033 /wd4267 /wd4244 /wd4065)
+else()
+    target_compile_options(parser_bison
+        PRIVATE -Wno-writable-strings)
+endif()
