@@ -46,6 +46,7 @@ struct ASTNode;
 
 %%
 line: expr { yy_result = std::unique_ptr<ASTNode>($1); }
+    ;
 
 expr: term { $$ = $1; }
     | ADD term { $$ = new ASTUnaryOperator(ASTUnaryOperator::POS, $2); }
