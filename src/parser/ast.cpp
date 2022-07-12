@@ -124,7 +124,7 @@ std::string ASTFunction::assign_name(const char *name, int len) {
 }
 
 void print_result(ASTNode *node) {
-    printf("%lf\n", node->value());
+    printf("%lg\n", node->value());
 }
 
 const char *UNARY_OPERATOR_NAMES[] = {"POS", "NEG"};
