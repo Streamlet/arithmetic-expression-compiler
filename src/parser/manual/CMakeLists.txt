@@ -18,9 +18,9 @@ add_executable(parser_manual
 
 if (MSVC)
     target_compile_definitions(parser_manual
-        PRIVATE -D_CRT_NONSTDC_NO_DEPRECATE )
+        PRIVATE -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS )
     target_compile_options(parser_manual
-        PRIVATE /wd5033 /wd4267 /wd4244 /wd4065)
+        PRIVATE /wd5033 /wd4267 /wd4244 /wd4065 /wd4819)
 else()
     target_compile_options(parser_manual
         PRIVATE -Wno-writable-strings)

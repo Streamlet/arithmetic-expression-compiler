@@ -10,3 +10,8 @@ add_executable(lexer_manual
     "lex.cpp"
     "main.cpp"
 )
+
+if (MSVC)
+    target_compile_definitions(lexer_manual
+        PRIVATE -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS)
+endif()

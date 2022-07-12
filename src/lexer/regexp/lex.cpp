@@ -91,7 +91,7 @@ Token Lexer::next() {
 
     for (int t = PG_ADD; t <= PG_FUNC; ++t) {
         if (m[t].matched) {
-            ctx->yyleng = m[t].second - m[t].first;
+            ctx->yyleng = (int)(m[t].second - m[t].first);
             ctx->yytext_end = ctx->yytext[ctx->yyleng];
             ctx->yytext[ctx->yyleng] = '\0';
             Token v{PATTERN_GROUP_TOKEN_MAP[t]};

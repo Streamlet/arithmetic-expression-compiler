@@ -96,7 +96,7 @@ Token Lexer::next() {
         if (p == ctx->yytext)
             return Token{YYUNDEF};
 
-        ctx->yyleng = p - ctx->yytext;
+        ctx->yyleng = (int)(p - ctx->yytext);
         ctx->yytext_end = ctx->yytext[ctx->yyleng];
         ctx->yytext[ctx->yyleng] = '\0';
         return Token{NUM, atof(ctx->yytext)};

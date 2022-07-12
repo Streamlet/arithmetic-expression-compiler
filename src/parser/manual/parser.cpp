@@ -2,12 +2,13 @@
 #include "../../lexer/manual/lex.h"
 #include <vector>
 #include <sstream>
+#include <assert.h>
 
 class parse_exception : public std::exception {
 public:
     parse_exception(std::string error) : error(std::move(error)) {
     }
-    const char *what() const _NOEXCEPT override {
+    const char *what() const override {
         return error.c_str();
     }
 

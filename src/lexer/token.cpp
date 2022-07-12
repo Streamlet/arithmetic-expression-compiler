@@ -1,4 +1,5 @@
 #include "token.h"
+#include <assert.h>
 
 const char *TOKEN_NAMES[] = {
     "UNDEF", "ADD", "SUB", "MUL", "DIV", "EXP", "MOD", "LPAREN", "RPAREN", "COMMA", "NUM", "FUNC",
