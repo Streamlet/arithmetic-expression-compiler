@@ -67,7 +67,7 @@ factor: expee { $$ = $1; }
 
 expee: num { $$ = $1; }
      | LPAREN expr RPAREN  { $$ = $2; }
-     | FUNC LPAREN params RPAREN { $$ = $3; if (!((ASTFunction *)$$)->assign_name($1.str, $1.len, yyerror)) YYERROR; }
+     | FUNC LPAREN params RPAREN { $$ = $3; auto err = ((ASTFunction *)$$)->assign_name($1.str, $1.len); if (!err.empty()) { yyerror(YY_(err.c_str())); YYERROR; } }
      ;
 
 params: expr { $$ = new ASTFunction; ((ASTFunction *)$$)->add_argument($1); }

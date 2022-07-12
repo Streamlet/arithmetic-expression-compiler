@@ -69,7 +69,7 @@ struct ASTFunction : public ASTNode {
     ASTFunction();
     double value() override;
     void add_argument(ASTNode *argumemt);
-    bool assign_name(const char *name, int len, int(yyerror)(const char *s));
+    std::string assign_name(const char *name, int len);
 
     Function func;
     std::vector<std::unique_ptr<ASTNode>> arguments;

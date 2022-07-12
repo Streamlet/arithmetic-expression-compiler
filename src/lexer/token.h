@@ -10,4 +10,5 @@ struct Token {
     std::string sval;
 };
 
+const char *token_name(yytoken_kind_t kind);
 void print(std::vector<Token> token_list);

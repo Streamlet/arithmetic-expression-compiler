@@ -105,7 +105,7 @@ void ASTFunction::add_argument(ASTNode *argument) {
     arguments.push_back(std::unique_ptr<ASTNode>(argument));
 }
 
-bool ASTFunction::assign_name(const char *name, int len, int(yyerror)(const char *s)) {
+std::string ASTFunction::assign_name(const char *name, int len) {
     for (int i = 0; i < sizeof(FUNC_DEF) / sizeof(FuncDef); ++i) {
         if (strncmp(FUNC_DEF[i].name, name, len) == 0) {
             func = FUNC_DEF[i].func;
@@ -113,16 +113,14 @@ bool ASTFunction::assign_name(const char *name, int len, int(yyerror)(const char
                 std::stringstream ss;
                 ss << "function '" << FUNC_DEF[i].name << "' needs " << FUNC_DEF[i].args << " argument(s), "
                    << arguments.size() << " provided.";
-                yyerror(ss.str().c_str());
-                return false;
+                return ss.str();
             }
-            return true;
+            return "";
         }
     }
     std::stringstream ss;
     ss << "function '" << std::string(name, len) << "' not found.";
-    yyerror(ss.str().c_str());
-    return false;
+    return ss.str();
 }
 
 void print_result(ASTNode *node) {
