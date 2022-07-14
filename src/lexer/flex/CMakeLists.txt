@@ -27,3 +27,6 @@ if (MSVC)
     target_compile_options(lexer_flex
         PRIVATE /wd5033 /wd4267 /wd4244 /wd4065)
 endif()
+
+install(TARGETS lexer_flex
+        RUNTIME DESTINATION ${CMAKE_CURRENT_LIST_DIR}/../../../bin)

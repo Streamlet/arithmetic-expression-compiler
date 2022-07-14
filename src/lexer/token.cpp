@@ -19,7 +19,7 @@ void print(std::vector<Token> token_list) {
     for (const auto &t : token_list) {
         switch (t.kind) {
         case NUM:
-            printf("%s %lf\n", token_name(t.kind), t.dval);
+            printf("%s %lg\n", token_name(t.kind), t.dval);
             break;
         case FUNC:
             printf("%s %s\n", token_name(t.kind), t.sval.c_str());

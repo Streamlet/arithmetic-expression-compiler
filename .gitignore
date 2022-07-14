@@ -3,3 +3,4 @@
 *.tab.cc
 *.tab.hh
 /build
+/bin

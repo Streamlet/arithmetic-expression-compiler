@@ -34,3 +34,6 @@ else()
     target_compile_options(parser_bison
         PRIVATE -Wno-writable-strings)
 endif()
+
+install(TARGETS parser_bison
+        RUNTIME DESTINATION ${CMAKE_CURRENT_LIST_DIR}/../../../bin)

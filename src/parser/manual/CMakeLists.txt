@@ -25,3 +25,6 @@ else()
     target_compile_options(parser_manual
         PRIVATE -Wno-writable-strings)
 endif()
+
+install(TARGETS parser_manual
+        RUNTIME DESTINATION ${CMAKE_CURRENT_LIST_DIR}/../../../bin)
