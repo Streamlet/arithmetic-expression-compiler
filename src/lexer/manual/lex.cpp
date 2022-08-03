@@ -65,7 +65,7 @@ Token Lexer::next() {
                 if (p[1] == '\0' || !(p[1] >= '0' && p[1] <= '9'))
                     break;
                 has_dot = true;
-                p += 2;
+                ++p;
             } else if (*p == 'E' || *p == 'e') {
                 if (has_exp)
                     break;
@@ -73,7 +73,7 @@ Token Lexer::next() {
                 if (p[digit_pos] == '\0' || !(p[digit_pos] >= '0' && p[digit_pos] <= '9'))
                     break;
                 has_exp = true;
-                p += digit_pos + 1;
+                p += digit_pos;
             } else if (*p >= '0' && *p <= '9') {
                 ++p;
             } else {

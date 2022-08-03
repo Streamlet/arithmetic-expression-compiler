@@ -179,7 +179,8 @@ ASTNode *Parser::expee() {
     ASTNode *expee_result = nullptr;
     switch (t.kind) {
     case NUM:
-        expee_result = num();
+        expee_result = new ASTNumber(t.dval);
+        yy_ctx->use_token(NUM);
         break;
     case LPAREN:
         yy_ctx->use_token(LPAREN);
@@ -220,15 +221,6 @@ ASTFunction *Parser::params() {
         }
     }
     return params_result;
-}
-
-// num: NUM;
-ASTNumber *Parser::num() {
-    const Token &t = yy_ctx->next_token();
-    double num = t.dval;
-    yy_ctx->use_token(NUM);
-    ASTNumber *num_result = new ASTNumber(t.dval);
-    return num_result;
 }
 
 std::unique_ptr<ASTNode> Parser::result() {

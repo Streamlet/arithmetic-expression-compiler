@@ -42,7 +42,7 @@ struct ASTNode;
 %left MUL DIV MOD
 %right EXP
 
-%type <node> expr term factor expee params num
+%type <node> expr term factor expee params
 
 %%
 line: expr { yy_result = std::unique_ptr<ASTNode>($1); }
@@ -65,7 +65,7 @@ factor: expee { $$ = $1; }
       | expee EXP factor { $$ = new ASTBinaryOperator(ASTBinaryOperator::EXP, $1, $3); }
       ;
 
-expee: num { $$ = $1; }
+expee: NUM { $$ = new ASTNumber($1); }
      | LPAREN expr RPAREN  { $$ = $2; }
      | FUNC LPAREN params RPAREN { $$ = $3; auto err = ((ASTFunction *)$$)->assign_name($1.str, $1.len); if (!err.empty()) { yyerror(YY_(err.c_str())); YYERROR; } }
      ;
@@ -73,9 +73,6 @@ expee: num { $$ = $1; }
 params: expr { $$ = new ASTFunction; ((ASTFunction *)$$)->add_argument($1); }
       | params COMMA expr { $$ = $1; ((ASTFunction *)$$)->add_argument($3); }
       ;
-
-num: NUM { $$ = new ASTNumber($1); }
-   ;
 
 %%
 
