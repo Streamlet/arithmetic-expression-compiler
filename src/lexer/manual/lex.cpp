@@ -55,19 +55,6 @@ Token Lexer::next() {
         return Token{it->second};
     }
 
-    if (*ctx->yytext == 'e') {
-        ctx->yytext_end = ctx->yytext[ctx->yyleng];
-        ctx->yytext[ctx->yyleng] = '\0';
-        return Token{NUM, M_E};
-    }
-
-    if (*ctx->yytext == 'p' && *(ctx->yytext + 1) == 'i') {
-        ctx->yyleng = 2;
-        ctx->yytext_end = ctx->yytext[ctx->yyleng];
-        ctx->yytext[ctx->yyleng] = '\0';
-        return Token{NUM, M_PI};
-    }
-
     if ((*ctx->yytext >= '0' && *ctx->yytext <= '9') || *ctx->yytext == '.') {
         const char *p = ctx->yytext;
         bool has_dot = false, has_exp = false;
@@ -105,11 +92,22 @@ Token Lexer::next() {
     if ((*ctx->yytext >= 'a' && *ctx->yytext <= 'z') || (*ctx->yytext >= 'A' && *ctx->yytext <= 'Z') ||
         *ctx->yytext == '_') {
         while ((ctx->yytext[ctx->yyleng] >= 'a' && ctx->yytext[ctx->yyleng] <= 'z') ||
-               (ctx->yytext[ctx->yyleng] >= 'A' && ctx->yytext[ctx->yyleng] <= 'Z') || ctx->yytext[ctx->yyleng] == '_') {
+               (ctx->yytext[ctx->yyleng] >= 'A' && ctx->yytext[ctx->yyleng] <= 'Z') ||
+               (ctx->yytext[ctx->yyleng] >= '0' && ctx->yytext[ctx->yyleng] <= '9') ||
+               ctx->yytext[ctx->yyleng] == '_') {
             ++ctx->yyleng;
         }
         ctx->yytext_end = ctx->yytext[ctx->yyleng];
         ctx->yytext[ctx->yyleng] = '\0';
+
+        if (ctx->yyleng == 1 && * ctx->yytext == 'e') {
+            return Token{NUM, M_E};
+        }
+
+        if (ctx->yyleng == 2 && *ctx->yytext == 'p' && *(ctx->yytext + 1) == 'i') {
+            return Token{NUM, M_PI};
+        }
+
         return Token{FUNC, 0.0, std::string(ctx->yytext, (size_t)ctx->yyleng)};
     }
     return Token{YYUNDEF};
