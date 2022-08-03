@@ -8,7 +8,11 @@ class parse_exception : public std::exception {
 public:
     parse_exception(std::string error) : error(std::move(error)) {
     }
+#ifdef _WIN32
     const char *what() const override {
+#else
+    const char *what() const _NOEXCEPT {
+#endif
         return error.c_str();
     }
 
